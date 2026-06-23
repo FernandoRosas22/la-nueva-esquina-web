@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+:root {
+  /* ---- Paleta de marca (definida por el cliente) ---- */
+  --color-noche: #0a0a0a; /* negro profundo, fondo principal */
+  --color-noche-suave: #151310; /* negro con un toque de calidez, para cards */
+  --color-dorado: #d4af37; /* dorado, bordes y acentos premium */
+  --color-dorado-claro: #e8c659;
+  --color-amarillo: #f5c518; /* amarillo intenso, CTAs principales */
+  --color-crema: #fafaf5; /* blanco cálido, texto principal sobre fondo oscuro */
+  --color-rojo: #e0291e; /* rojo, promociones y urgencia */
+
+  --background: var(--color-noche);
+  --foreground: var(--color-crema);
+
+  --font-display: var(--font-playfair);
+  --font-body: var(--font-inter);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-noche: var(--color-noche);
+  --color-noche-suave: var(--color-noche-suave);
+  --color-dorado: var(--color-dorado);
+  --color-dorado-claro: var(--color-dorado-claro);
+  --color-amarillo: var(--color-amarillo);
+  --color-crema: var(--color-crema);
+  --color-rojo: var(--color-rojo);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+/* Scrollbar discreto, en línea con el fondo oscuro */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-noche);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-dorado);
+  border-radius: 999px;
+}
+
+/* Utilidad para truncar texto a 2 líneas en descripciones de producto */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Respeta preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
