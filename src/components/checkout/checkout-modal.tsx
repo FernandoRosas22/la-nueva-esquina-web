@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { X, ArrowLeft } from "lucide-react";
+import { X, ArrowLeft, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { storeConfig } from "@/config/store";
 import { formatPrice } from "@/lib/format-price";
@@ -88,6 +88,29 @@ export function CheckoutModal() {
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 px-5 py-5">
+              <div className="rounded-2xl border border-dorado/20 bg-noche px-4 py-3">
+                <p className="text-sm font-bold text-dorado">Resumen de compra</p>
+                <p className="mt-0.5 text-xs text-crema/60">
+                  Revisá tus datos antes de enviar el pedido.
+                </p>
+                <ul className="mt-3 flex flex-col gap-1.5">
+                  {items.map((item) => (
+                    <li
+                      key={item.key}
+                      className="flex items-center justify-between text-sm text-crema/80"
+                    >
+                      <span>
+                        {item.quantity}x {item.name}
+                        {item.variantName ? ` (${item.variantName})` : ""}
+                      </span>
+                      <span className="font-semibold text-crema">
+                        {formatPrice(item.price * item.quantity)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               <Field
                 label="Nombre"
                 value={form.name}
@@ -149,12 +172,17 @@ export function CheckoutModal() {
                 </div>
               </div>
 
-              <div className="mt-2 flex items-center justify-between border-t border-dorado/20 pt-4">
+              <div className="mt-2 flex items-center justify-between rounded-2xl bg-noche px-4 py-3">
                 <span className="font-semibold text-crema">Total a pagar</span>
-                <span className="font-display text-2xl font-extrabold text-amarillo">
+                <span className="font-display text-3xl font-extrabold text-amarillo">
                   {formatPrice(totalPrice)}
                 </span>
               </div>
+
+              <p className="flex items-center justify-center gap-1.5 text-xs font-medium text-crema/60">
+                <ShieldCheck size={14} className="text-amarillo" />
+                Pedido seguro · Confirmación inmediata por WhatsApp
+              </p>
 
               <Button type="submit" size="lg" variant="whatsapp" className="w-full">
                 Enviar pedido por WhatsApp

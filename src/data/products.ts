@@ -2,15 +2,15 @@
 // Para sumar un producto nuevo: agregar un objeto al array `products`.
 // Para sacar uno de la sección "Más Pedidos": quitar `featured: true`.
 //
-// IMPORTANTE - IMÁGENES:
-// Las imágenes apuntan a /public/images/products/*.svg, que son placeholders
-// temporales (ver public/images/products/LEEME.md). Cuando tengan las fotos
-// reales de cada plato, hay que:
-//   1) Poner la foto en public/images/products/ con formato .jpg o .webp
-//   2) Cambiar la extensión ".svg" por ".jpg" (o ".webp") en el campo `image`
-//      del producto correspondiente, acá abajo.
+// IMÁGENES: ya son las fotos reales de cada plato, ubicadas en
+// public/images/products/. Para cambiar una foto, simplemente reemplazar
+// el archivo correspondiente o actualizar la ruta en el campo `image`.
 
 import type { Product } from "@/types";
+
+/** Chips por defecto, reutilizados en la mayoría de los productos */
+const chipsClasicos = ["Ingredientes frescos", "Preparado al momento"];
+const chipsConDelivery = [...chipsClasicos, "Entrega rápida"];
 
 export const products: Product[] = [
   // ---------- COMBOS ----------
@@ -24,6 +24,7 @@ export const products: Product[] = [
     category: "combos",
     featured: true,
     badge: "EL MÁS PEDIDO",
+    chips: chipsConDelivery,
   },
   {
     id: "combo-dibu-martinez",
@@ -35,6 +36,7 @@ export const products: Product[] = [
     category: "combos",
     featured: true,
     badge: "PROMO",
+    chips: chipsConDelivery,
   },
   {
     id: "combo-adolescente",
@@ -44,6 +46,8 @@ export const products: Product[] = [
     price: 25000,
     image: "/images/products/combo-adolescente.jpeg",
     category: "combos",
+    badge: "RECOMENDADO",
+    chips: chipsClasicos,
   },
   {
     id: "combo-argento",
@@ -53,6 +57,7 @@ export const products: Product[] = [
     price: 25000,
     image: "/images/products/combo-argento.jpeg",
     category: "combos",
+    chips: chipsClasicos,
   },
   {
     id: "combo-mcallister",
@@ -61,6 +66,7 @@ export const products: Product[] = [
     price: 20000,
     image: "/images/products/combo-mcallister.jpeg",
     category: "combos",
+    chips: chipsClasicos,
   },
 
   // ---------- MILANESAS ----------
@@ -73,6 +79,8 @@ export const products: Product[] = [
     image: "/images/products/mila-con-fritas.jpeg",
     category: "milanesas",
     featured: true,
+    badge: "EL MÁS PEDIDO",
+    chips: chipsConDelivery,
   },
 
   // ---------- EMPANADAS ----------
@@ -84,6 +92,7 @@ export const products: Product[] = [
     price: 12000,
     image: "/images/products/empanadas.jpeg",
     category: "empanadas",
+    chips: chipsClasicos,
     variants: [
       { id: "media-docena", name: "Media Docena", price: 12000 },
       { id: "docena", name: "Docena", price: 23000 },
@@ -99,6 +108,20 @@ export const products: Product[] = [
     price: 15000,
     image: "/images/products/hamburguesa-clásica.png",
     category: "hamburguesas",
+    chips: chipsClasicos,
+    // PREPARADO PARA EL FUTURO: ejemplo de cómo se verían los extras y
+    // observaciones cuando se active la UI correspondiente (ver types/index.ts).
+    extras: [
+      { id: "extra-cheddar", name: "Extra cheddar", price: 1500 },
+      { id: "extra-panceta", name: "Extra panceta", price: 2000 },
+      { id: "extra-huevo", name: "Extra huevo", price: 1200 },
+      { id: "extra-papas", name: "Extra papas", price: 2500 },
+    ],
+    observations: [
+      { id: "sin-tomate", label: "Sin tomate" },
+      { id: "sin-cebolla", label: "Sin cebolla" },
+      { id: "extra-salsa", label: "Extra salsa" },
+    ],
   },
 
   // ---------- SANDWICHES ----------
@@ -110,6 +133,7 @@ export const products: Product[] = [
     price: 15000,
     image: "/images/products/Sandwich-de-mila.jpeg",
     category: "sandwiches",
+    chips: chipsClasicos,
   },
 ];
 

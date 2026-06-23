@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { X, Trash2, ShoppingBag } from "lucide-react";
+import { X, Trash2, ShoppingBag, ShieldCheck } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { QuantityStepper } from "@/components/ui/quantity-stepper";
@@ -60,13 +60,13 @@ export function CartDrawer() {
                         key={item.key}
                         className="flex gap-3 border-b border-white/5 pb-4 last:border-none"
                       >
-                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg">
+                        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border border-dorado/20">
                           <Image
                             src={item.image}
                             alt={item.name}
                             fill
                             className="object-cover"
-                            sizes="64px"
+                            sizes="96px"
                           />
                         </div>
                         <div className="flex flex-1 flex-col">
@@ -76,6 +76,9 @@ export function CartDrawer() {
                               {item.variantName && (
                                 <p className="text-xs text-crema/50">{item.variantName}</p>
                               )}
+                              <p className="mt-0.5 text-xs text-crema/40">
+                                {formatPrice(item.price)} c/u
+                              </p>
                             </div>
                             <button
                               type="button"
@@ -112,12 +115,16 @@ export function CartDrawer() {
                 </div>
 
                 <div className="border-t border-dorado/20 px-5 py-4">
-                  <div className="mb-4 flex items-center justify-between">
-                    <span className="text-lg font-semibold text-crema">Total</span>
-                    <span className="font-display text-2xl font-extrabold text-amarillo">
+                  <div className="mb-3 flex items-center justify-between rounded-2xl bg-noche px-4 py-3">
+                    <span className="text-base font-semibold text-crema">Total</span>
+                    <span className="font-display text-3xl font-extrabold text-amarillo">
                       {formatPrice(totalPrice)}
                     </span>
                   </div>
+                  <p className="mb-3 flex items-center justify-center gap-1.5 text-xs font-medium text-crema/60">
+                    <ShieldCheck size={14} className="text-amarillo" />
+                    Pedido seguro · Confirmación inmediata por WhatsApp
+                  </p>
                   <Button size="lg" className="w-full" onClick={openCheckout}>
                     Continuar pedido
                   </Button>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Plus } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format-price";
 import { useCartContext } from "@/hooks/cart-context";
@@ -22,13 +23,18 @@ export function ProductCard({ product }: { product: Product }) {
   };
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-dorado/20 bg-noche-suave transition-colors hover:border-dorado/50 sm:flex-row">
-      <div className="relative h-52 w-full shrink-0 sm:h-auto sm:w-56">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-dorado/20 bg-noche-suave shadow-md transition-all duration-300 hover:border-dorado/50 hover:shadow-xl sm:flex-row">
+      <div className="relative h-52 w-full shrink-0 overflow-hidden sm:h-auto sm:w-56">
+        {product.badge && (
+          <div className="absolute left-3 top-3 z-10">
+            <Badge variant="rojo">{product.badge}</Badge>
+          </div>
+        )}
         <Image
           src={product.image}
           alt={product.name}
           fill
-          className="object-cover"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 224px"
         />
       </div>
@@ -39,6 +45,19 @@ export function ProductCard({ product }: { product: Product }) {
             {product.name}
           </h3>
           <p className="mt-1 text-sm text-crema/70 sm:text-base">{product.description}</p>
+
+          {product.chips && product.chips.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {product.chips.map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-full border border-dorado/20 bg-noche px-3 py-1 text-xs font-medium text-crema/60"
+                >
+                  {chip}
+                </span>
+              ))}
+            </div>
+          )}
 
           {hasVariants && (
             <div className="mt-4 flex flex-wrap gap-2">

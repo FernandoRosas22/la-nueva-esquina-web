@@ -5,12 +5,32 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { business } from "@/data/business";
 
+const beneficios = [
+  "Combos para compartir",
+  "Milanesas caseras",
+  "Hamburguesas",
+  "Pedidos rápidos por WhatsApp",
+];
+
 export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative overflow-hidden bg-noche px-4 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-24"
+      className="relative overflow-hidden px-4 pt-14 pb-16 sm:px-6 sm:pt-20 sm:pb-24"
     >
+      {/* Imagen de fondo gastronómica, con overlay oscuro para legibilidad */}
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src="/images/hero/hero-bg.svg"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-noche/75" />
+        <div className="absolute inset-0 bg-gradient-to-b from-noche/40 via-transparent to-noche" />
+      </div>
+
       {/* Resplandor dorado ambiental, sutil, no decorativo de relleno */}
       <div
         className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-dorado/20 blur-3xl sm:h-[560px] sm:w-[560px]"
@@ -60,6 +80,23 @@ export function Hero() {
           {business.description}
         </motion.p>
 
+        <motion.ul
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
+          className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
+        >
+          {beneficios.map((beneficio) => (
+            <li
+              key={beneficio}
+              className="flex items-center gap-1.5 text-sm font-medium text-crema/90 sm:text-base"
+            >
+              <span className="text-amarillo">✓</span>
+              {beneficio}
+            </li>
+          ))}
+        </motion.ul>
+
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -70,19 +107,19 @@ export function Hero() {
             size="lg"
             variant="primary"
             onClick={() =>
-              document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" })
+              document.getElementById("destacados")?.scrollIntoView({ behavior: "smooth" })
             }
           >
-            Ver Menú
+            Pedir Ahora
           </Button>
           <Button
             size="lg"
             variant="outline"
             onClick={() =>
-              document.getElementById("destacados")?.scrollIntoView({ behavior: "smooth" })
+              document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" })
             }
           >
-            Pedir Ahora
+            Ver Menú
           </Button>
         </motion.div>
 

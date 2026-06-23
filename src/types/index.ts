@@ -18,6 +18,28 @@ export interface ProductVariant {
   price: number;
 }
 
+/**
+ * Extra opcional que se puede sumar a un producto (ej: "Extra cheddar").
+ * PREPARADO PARA EL FUTURO: el tipo ya existe y los productos pueden declarar
+ * `extras`, pero todavía no hay UI conectada para seleccionarlos en el carrito.
+ * Cuando se quiera activar, el componente ProductCard es el lugar natural
+ * para agregar los checkboxes/steppers correspondientes.
+ */
+export interface ProductExtra {
+  id: string;
+  name: string;
+  price: number;
+}
+
+/**
+ * Observación predefinida para un producto (ej: "Sin tomate", "Sin cebolla").
+ * PREPARADO PARA EL FUTURO: mismo estado que ProductExtra, sin UI todavía.
+ */
+export interface ProductObservation {
+  id: string;
+  label: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -32,6 +54,12 @@ export interface Product {
   badge?: string;
   /** Variantes de tamaño/cantidad (ej: empanadas por media docena o docena) */
   variants?: ProductVariant[];
+  /** Chips cortos debajo de la descripción (ej: "Preparado al momento") */
+  chips?: string[];
+  /** Extras opcionales (preparado para el futuro, sin UI activa aún) */
+  extras?: ProductExtra[];
+  /** Observaciones predefinidas (preparado para el futuro, sin UI activa aún) */
+  observations?: ProductObservation[];
 }
 
 export interface CartItem {

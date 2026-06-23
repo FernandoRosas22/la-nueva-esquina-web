@@ -1,33 +1,30 @@
-# Imágenes de productos — pendientes de reemplazo
+# Imágenes de productos
 
-Los archivos `.svg` de esta carpeta son **placeholders temporales**, generados
-automáticamente para que la web funcione mientras no haya fotos reales de
-cada plato.
+Todas las fotos de productos ya son las reales del negocio (no hay
+placeholders). Los archivos actuales son:
 
-## Cómo reemplazar una imagen
+- combo-messi.jpeg
+- combo-dibu-martinez.jpeg
+- combo-adolescente.jpeg
+- combo-argento.jpeg
+- combo-mcallister.jpeg
+- mila-con-fritas.jpeg
+- empanadas.jpeg
+- hamburguesa-clásica.png
+- Sandwich-de-mila.jpeg
+
+## Cómo cambiar una foto en el futuro
 
 1. Sacar (o pedir) una foto del plato real. Recomendado: cuadrada o 4:3,
    buena luz, fondo simple, mínimo 1000x1000px.
-2. Guardarla en esta misma carpeta con formato `.jpg` o `.webp`, por ejemplo:
-   `combo-messi.jpg`
-3. Abrir `src/data/products.ts` y cambiar la extensión en el campo `image`
-   del producto correspondiente:
-
-   ```ts
-   image: "/images/products/combo-messi.svg",   // antes
-   image: "/images/products/combo-messi.jpg",   // después
-   ```
-
+2. Reemplazar el archivo en esta carpeta (mismo nombre) o subir uno nuevo.
+3. Si el nombre del archivo cambia, actualizar la ruta en el campo `image`
+   del producto correspondiente en `src/data/products.ts`.
 4. Listo. Next.js optimiza automáticamente la imagen nueva.
 
-## Productos pendientes de foto real
+## Cómo agregar un producto nuevo
 
-- combo-messi
-- combo-dibu-martinez
-- combo-adolescente
-- combo-argento
-- combo-mcallister
-- mila-con-fritas
-- empanadas
-- hamburguesa-clasica
-- sandwich-de-milanesa
+Editar `src/data/products.ts` y agregar un objeto al array `products`,
+siguiendo el mismo formato que los productos existentes. Ahí también se
+pueden definir `chips` (etiquetas cortas tipo "Preparado al momento") y,
+a futuro, `extras` u `observations` si se activa esa función.

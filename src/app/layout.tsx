@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import { CartProvider } from "@/hooks/cart-context";
 import { UIProvider } from "@/hooks/ui-context";
+import { ToastProvider } from "@/hooks/toast-context";
+import { ToastViewport } from "@/components/ui/toast-viewport";
 import { LocalBusinessSchema } from "@/components/seo/local-business-schema";
 import { business } from "@/data/business";
 import "./globals.css";
@@ -83,9 +85,12 @@ export default function RootLayout({
         <LocalBusinessSchema />
       </head>
       <body className={`${playfair.variable} ${inter.variable} antialiased bg-noche text-crema`}>
-        <UIProvider>
-          <CartProvider>{children}</CartProvider>
-        </UIProvider>
+        <ToastProvider>
+          <UIProvider>
+            <CartProvider>{children}</CartProvider>
+          </UIProvider>
+          <ToastViewport />
+        </ToastProvider>
       </body>
     </html>
   );
