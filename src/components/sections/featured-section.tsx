@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button";
 import { featuredProducts } from "@/data/products";
 import { formatPrice } from "@/lib/format-price";
 import { useCartContext } from "@/hooks/cart-context";
+import { useProductModalContext } from "@/hooks/product-modal-context";
 
 export function FeaturedSection() {
   const { addItem } = useCartContext();
+  const { openProduct } = useProductModalContext();
 
   return (
     <section id="destacados" className="bg-noche px-4 py-12 sm:px-6 sm:py-16">
@@ -30,7 +32,7 @@ export function FeaturedSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-dorado/30 bg-noche-suave shadow-lg"
+              className="group relative flex flex-col overflow-hidden rounded-2xl border border-dorado/30 bg-noche-suave shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
             >
               {product.badge && (
                 <div className="absolute left-3 top-3 z-10">
@@ -38,7 +40,12 @@ export function FeaturedSection() {
                 </div>
               )}
 
-              <div className="relative h-56 w-full overflow-hidden sm:h-64">
+              <button
+                type="button"
+                onClick={() => openProduct(product)}
+                aria-label={`Ver detalle de ${product.name}`}
+                className="relative h-56 w-full cursor-pointer overflow-hidden sm:h-64"
+              >
                 <Image
                   src={product.image}
                   alt={product.name}
@@ -47,12 +54,14 @@ export function FeaturedSection() {
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-noche via-noche/10 to-transparent" />
-              </div>
+              </button>
 
               <div className="flex flex-1 flex-col p-5">
-                <h3 className="font-display text-xl font-bold text-crema">
-                  {product.name}
-                </h3>
+                <button type="button" onClick={() => openProduct(product)} className="text-left">
+                  <h3 className="font-display text-xl font-bold text-crema transition-colors hover:text-amarillo">
+                    {product.name}
+                  </h3>
+                </button>
                 <p className="mt-1 line-clamp-2 text-sm text-crema/70">
                   {product.description}
                 </p>

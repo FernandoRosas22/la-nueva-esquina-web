@@ -20,9 +20,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // muestre una notificación y abra el carrito automáticamente
   // (igual que la referencia de Ale Burgers).
   const addItem = useCallback(
-    (product: Product, variant?: ProductVariant) => {
-      cart.addItem(product, variant);
-      showToast("Producto agregado al carrito");
+    (product: Product, variant?: ProductVariant, quantity: number = 1) => {
+      cart.addItem(product, variant, quantity);
+      showToast(`${product.name} agregado al carrito`);
       openCart();
     },
     [cart, openCart, showToast]

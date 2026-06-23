@@ -7,10 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format-price";
 import { useCartContext } from "@/hooks/cart-context";
+import { useProductModalContext } from "@/hooks/product-modal-context";
 import type { Product, ProductVariant } from "@/types";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCartContext();
+  const { openProduct } = useProductModalContext();
   const hasVariants = Boolean(product.variants?.length);
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | undefined>(
     product.variants?.[0]
@@ -23,8 +25,13 @@ export function ProductCard({ product }: { product: Product }) {
   };
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-dorado/20 bg-noche-suave shadow-md transition-all duration-300 hover:border-dorado/50 hover:shadow-xl sm:flex-row">
-      <div className="relative h-52 w-full shrink-0 overflow-hidden sm:h-auto sm:w-56">
+    <div className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-dorado/20 bg-noche-suave shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-dorado/50 hover:shadow-xl sm:flex-row">
+      <button
+        type="button"
+        onClick={() => openProduct(product)}
+        aria-label={`Ver detalle de ${product.name}`}
+        className="relative h-52 w-full shrink-0 cursor-pointer overflow-hidden sm:h-auto sm:w-56"
+      >
         {product.badge && (
           <div className="absolute left-3 top-3 z-10">
             <Badge variant="rojo">{product.badge}</Badge>
@@ -37,13 +44,19 @@ export function ProductCard({ product }: { product: Product }) {
           className="object-cover transition-transform duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, 224px"
         />
-      </div>
+      </button>
 
       <div className="flex flex-1 flex-col justify-between p-5">
         <div>
-          <h3 className="font-display text-xl font-bold text-crema sm:text-2xl">
-            {product.name}
-          </h3>
+          <button
+            type="button"
+            onClick={() => openProduct(product)}
+            className="text-left"
+          >
+            <h3 className="font-display text-xl font-bold text-crema transition-colors hover:text-amarillo sm:text-2xl">
+              {product.name}
+            </h3>
+          </button>
           <p className="mt-1 text-sm text-crema/70 sm:text-base">{product.description}</p>
 
           {product.chips && product.chips.length > 0 && (

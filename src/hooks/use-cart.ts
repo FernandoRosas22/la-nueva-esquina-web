@@ -40,37 +40,40 @@ export function useCart() {
     window.localStorage.setItem(storeConfig.cartStorageKey, JSON.stringify(items));
   }, [items, isHydrated]);
 
-  const addItem = useCallback((product: Product, variant?: ProductVariant) => {
-    const key = buildItemKey(product.id, variant?.id);
-    const price = variant ? variant.price : product.price;
-    const name = product.name;
-    const variantName = variant?.name;
+  const addItem = useCallback(
+    (product: Product, variant?: ProductVariant, quantity: number = 1) => {
+      const key = buildItemKey(product.id, variant?.id);
+      const price = variant ? variant.price : product.price;
+      const name = product.name;
+      const variantName = variant?.name;
 
-    setItems((prev) => {
-      const existing = prev.find((item) => item.key === key);
-      if (existing) {
-        const nextQuantity = Math.min(
-          existing.quantity + 1,
-          storeConfig.maxQuantityPerItem
-        );
-        return prev.map((item) =>
-          item.key === key ? { ...item, quantity: nextQuantity } : item
-        );
-      }
-      return [
-        ...prev,
-        {
-          key,
-          productId: product.id,
-          name,
-          variantName,
-          price,
-          quantity: 1,
-          image: product.image,
-        },
-      ];
-    });
-  }, []);
+      setItems((prev) => {
+        const existing = prev.find((item) => item.key === key);
+        if (existing) {
+          const nextQuantity = Math.min(
+            existing.quantity + quantity,
+            storeConfig.maxQuantityPerItem
+          );
+          return prev.map((item) =>
+            item.key === key ? { ...item, quantity: nextQuantity } : item
+          );
+        }
+        return [
+          ...prev,
+          {
+            key,
+            productId: product.id,
+            name,
+            variantName,
+            price,
+            quantity: Math.min(quantity, storeConfig.maxQuantityPerItem),
+            image: product.image,
+          },
+        ];
+      });
+    },
+    []
+  );
 
   const removeItem = useCallback((key: string) => {
     setItems((prev) => prev.filter((item) => item.key !== key));

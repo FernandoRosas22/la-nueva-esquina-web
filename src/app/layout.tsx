@@ -3,6 +3,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import { CartProvider } from "@/hooks/cart-context";
 import { UIProvider } from "@/hooks/ui-context";
 import { ToastProvider } from "@/hooks/toast-context";
+import { ProductModalProvider } from "@/hooks/product-modal-context";
 import { ToastViewport } from "@/components/ui/toast-viewport";
 import { LocalBusinessSchema } from "@/components/seo/local-business-schema";
 import { business } from "@/data/business";
@@ -87,7 +88,9 @@ export default function RootLayout({
       <body className={`${playfair.variable} ${inter.variable} antialiased bg-noche text-crema`}>
         <ToastProvider>
           <UIProvider>
-            <CartProvider>{children}</CartProvider>
+            <CartProvider>
+              <ProductModalProvider>{children}</ProductModalProvider>
+            </CartProvider>
           </UIProvider>
           <ToastViewport />
         </ToastProvider>

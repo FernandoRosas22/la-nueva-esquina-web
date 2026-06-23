@@ -8,6 +8,7 @@ import { CartDrawer } from "@/components/cart/cart-drawer";
 import { CheckoutModal } from "@/components/checkout/checkout-modal";
 import { MobileCartBar } from "@/components/cart/mobile-cart-bar";
 import { WhatsAppFloatingButton } from "@/components/ui/whatsapp-floating-button";
+import { ProductDetailModal } from "@/components/menu/product-detail-modal";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <CheckoutModal />
       <MobileCartBar />
       <WhatsAppFloatingButton />
+      <ProductDetailModal />
     </>
   );
 }
