@@ -108,7 +108,7 @@ export const products: Product[] = [
     description:
       "Milanesa de ternera entera en pan, con las opciones clásicas para armarlo a tu gusto.",
     price: 15000,
-    image: "/images/products/Sandwich-de-milanesa.jpeg",
+    image: "/images/products/Sandwich-de-mila.jpeg",
     category: "sandwiches",
   },
 ];
