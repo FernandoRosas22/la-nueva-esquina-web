@@ -97,7 +97,7 @@ export const products: Product[] = [
     description:
       "Medallón jugoso, queso, lechuga, tomate y nuestra salsa de la casa en pan casero.",
     price: 15000,
-    image: "/images/products/hamburguesa-clasica.png",
+    image: "/images/products/hamburguesa-clásica.png",
     category: "hamburguesas",
   },
 
@@ -108,7 +108,7 @@ export const products: Product[] = [
     description:
       "Milanesa de ternera entera en pan, con las opciones clásicas para armarlo a tu gusto.",
     price: 15000,
-    image: "/images/products/sandwich-de-milanesa.jpeg",
+    image: "/images/products/Sandwich-de-milanesa.jpeg",
     category: "sandwiches",
   },
 ];
