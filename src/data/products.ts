@@ -20,7 +20,7 @@ export const products: Product[] = [
     description:
       "El combo número 10. Doble milanesa, papas fritas abundantes, gaseosa y la mejor compañía para ver el partido.",
     price: 30000,
-    image: "/images/products/combo-messi.svg",
+    image: "/images/products/combo-messi.jpeg",
     category: "combos",
     featured: true,
     badge: "EL MÁS PEDIDO",
@@ -31,7 +31,7 @@ export const products: Product[] = [
     description:
       "Un combo que ataja todo: milanesa napolitana, papas y bebida. Ideal para compartir antes de la tanda de penales.",
     price: 25000,
-    image: "/images/products/combo-dibu-martinez.svg",
+    image: "/images/products/combo-dibu-martinez.jpeg",
     category: "combos",
     featured: true,
     badge: "PROMO",
@@ -42,7 +42,7 @@ export const products: Product[] = [
     description:
       "Porción generosa pensada para los que siempre tienen hambre. Milanesa, papas fritas y gaseosa.",
     price: 25000,
-    image: "/images/products/combo-adolescente.svg",
+    image: "/images/products/combo-adolescente.jpeg",
     category: "combos",
   },
   {
@@ -51,7 +51,7 @@ export const products: Product[] = [
     description:
       "Sabor bien nuestro: milanesa a la napolitana, papas fritas caseras y bebida bien fría.",
     price: 25000,
-    image: "/images/products/combo-argento.svg",
+    image: "/images/products/combo-argento.jpeg",
     category: "combos",
   },
   {
@@ -59,7 +59,7 @@ export const products: Product[] = [
     name: "Combo McAllister",
     description: "Combo individual con milanesa, papas fritas y gaseosa. Rendidor y a buen precio.",
     price: 20000,
-    image: "/images/products/combo-mcallister.svg",
+    image: "/images/products/combo-mcallister.jpeg",
     category: "combos",
   },
 
@@ -70,7 +70,7 @@ export const products: Product[] = [
     description:
       "Clásica milanesa de ternera con guarnición de papas fritas abundantes, recién hechas.",
     price: 14000,
-    image: "/images/products/mila-con-fritas.svg",
+    image: "/images/products/mila-con-fritas.jpeg",
     category: "milanesas",
     featured: true,
   },
@@ -82,7 +82,7 @@ export const products: Product[] = [
     description:
       "Empanadas caseras, repulgo prolijo y relleno abundante. Elegí la cantidad que necesitás.",
     price: 12000,
-    image: "/images/products/empanadas.svg",
+    image: "/images/products/empanadas.jpeg",
     category: "empanadas",
     variants: [
       { id: "media-docena", name: "Media Docena", price: 12000 },
@@ -97,7 +97,7 @@ export const products: Product[] = [
     description:
       "Medallón jugoso, queso, lechuga, tomate y nuestra salsa de la casa en pan casero.",
     price: 15000,
-    image: "/images/products/hamburguesa-clasica.svg",
+    image: "/images/products/hamburguesa-clasica.png",
     category: "hamburguesas",
   },
 
@@ -108,7 +108,7 @@ export const products: Product[] = [
     description:
       "Milanesa de ternera entera en pan, con las opciones clásicas para armarlo a tu gusto.",
     price: 15000,
-    image: "/images/products/sandwich-de-milanesa.svg",
+    image: "/images/products/sandwich-de-milanesa.jpeg",
     category: "sandwiches",
   },
 ];
