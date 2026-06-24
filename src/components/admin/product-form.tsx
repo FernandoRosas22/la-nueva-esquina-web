@@ -93,6 +93,17 @@ export function ProductForm({
       setError("La URL de la imagen es obligatoria.");
       return;
     }
+    const imageValue = values.image.trim();
+    const isValidImageValue =
+      imageValue.startsWith("http://") ||
+      imageValue.startsWith("https://") ||
+      imageValue.startsWith("/");
+    if (!isValidImageValue) {
+      setError(
+        'La imagen tiene que ser una URL completa (https://...) o una ruta que empiece con "/".'
+      );
+      return;
+    }
     if (!Number.isFinite(priceNumber) || priceNumber <= 0) {
       setError("El precio tiene que ser un número mayor a 0.");
       return;
@@ -171,12 +182,12 @@ export function ProductForm({
       <div>
         <label className="mb-1 block text-sm font-medium text-crema/80">URL de la imagen</label>
         <input
-          type="url"
+          type="text"
           required
           value={values.image}
           onChange={(e) => update("image", e.target.value)}
           className="w-full rounded-xl border border-dorado/20 bg-noche px-4 py-2.5 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
-          placeholder="https://..."
+          placeholder="https://... o /images/products/foto.jpg"
         />
         {values.image && (
           <div className="relative mt-2 h-32 w-32 overflow-hidden rounded-xl border border-dorado/20 bg-noche">
