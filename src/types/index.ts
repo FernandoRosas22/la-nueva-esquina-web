@@ -2,12 +2,10 @@
 // Mantener este archivo como única fuente de verdad evita
 // definiciones de tipos duplicadas o inconsistentes entre componentes.
 
-export type ProductCategory =
-  | "combos"
-  | "milanesas"
-  | "empanadas"
-  | "hamburguesas"
-  | "sandwiches";
+// Antes era un union fijo ("combos" | "milanesas" | ...). Ahora las
+// categorías son dinámicas (se administran desde /admin y viven en
+// Firestore), así que el tipo pasa a ser el id de categoría como string.
+export type ProductCategory = string;
 
 export interface ProductVariant {
   /** Identificador único de la variante dentro del producto (ej: "media-docena") */

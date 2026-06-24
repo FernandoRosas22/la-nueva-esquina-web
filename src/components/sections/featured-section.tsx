@@ -4,14 +4,19 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { featuredProducts } from "@/data/products";
+import { useProducts } from "@/hooks/use-products";
 import { formatPrice } from "@/lib/format-price";
 import { useCartContext } from "@/hooks/cart-context";
 import { useProductModalContext } from "@/hooks/product-modal-context";
 
 export function FeaturedSection() {
+  const { products } = useProducts();
   const { addItem } = useCartContext();
   const { openProduct } = useProductModalContext();
+
+  const featuredProducts = products.filter((p) => p.featured);
+
+  if (featuredProducts.length === 0) return null;
 
   return (
     <section id="destacados" className="bg-noche px-4 py-12 sm:px-6 sm:py-16">
