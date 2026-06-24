@@ -19,6 +19,10 @@ const fields: Array<{ key: keyof BusinessSettingsDoc; label: string; placeholder
   { key: "facebook", label: "Facebook (URL)", placeholder: "https://facebook.com/..." },
   { key: "alias", label: "Alias para transferencias", placeholder: "lanuevaesquina.mp" },
   { key: "cbu", label: "CBU", placeholder: "0000003100000000000000" },
+  { key: "slogan", label: "Slogan (debajo del nombre en el inicio)", placeholder: "Tu mejor versión en cada comida" },
+  { key: "heroDescription", label: "Descripción del inicio", placeholder: "Tu rotisería de confianza en la palma de tu mano..." },
+  { key: "seoTitle", label: "Título para Google", placeholder: "La Nueva Esquina | Rotisería en Merlo" },
+  { key: "seoDescription", label: "Descripción para Google", placeholder: "Combos, hamburguesas, milanesas y empanadas. Pedidos por WhatsApp." },
 ];
 
 export default function AdminSettingsPage() {

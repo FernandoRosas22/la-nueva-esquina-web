@@ -8,6 +8,7 @@ import { useProducts } from "@/hooks/use-products";
 import { formatPrice } from "@/lib/format-price";
 import { useCartContext } from "@/hooks/cart-context";
 import { useProductModalContext } from "@/hooks/product-modal-context";
+import { isDataUrl } from "@/lib/is-data-url";
 
 export function FeaturedSection() {
   const { products } = useProducts();
@@ -55,6 +56,7 @@ export function FeaturedSection() {
                   src={product.image}
                   alt={product.name}
                   fill
+                  unoptimized={isDataUrl(product.image)}
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 33vw"
                 />

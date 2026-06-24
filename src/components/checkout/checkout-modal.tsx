@@ -9,6 +9,7 @@ import { formatPrice } from "@/lib/format-price";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
 import { useCartContext } from "@/hooks/cart-context";
 import { useUIContext } from "@/hooks/ui-context";
+import { useBusinessSettings } from "@/hooks/use-business-settings";
 import type { CheckoutData, PaymentMethod } from "@/types";
 
 const initialForm: CheckoutData = {
@@ -22,6 +23,7 @@ const initialForm: CheckoutData = {
 export function CheckoutModal() {
   const { view, close, openCart } = useUIContext();
   const { items, totalPrice, clearCart } = useCartContext();
+  const businessData = useBusinessSettings();
   const [form, setForm] = useState<CheckoutData>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<keyof CheckoutData, string>>>({});
 
@@ -40,7 +42,7 @@ export function CheckoutModal() {
     e.preventDefault();
     if (!validate()) return;
 
-    const url = buildWhatsAppUrl(items, form);
+    const url = buildWhatsAppUrl(items, form, businessData.whatsapp);
     window.open(url, "_blank", "noopener,noreferrer");
     clearCart();
     setForm(initialForm);

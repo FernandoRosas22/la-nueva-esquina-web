@@ -1,18 +1,35 @@
 import { business } from "@/data/business";
 
+interface LocalBusinessSchemaProps {
+  name: string;
+  description: string;
+  telephone: string;
+  instagram?: string;
+}
+
 /**
  * Inyecta el JSON-LD de tipo LocalBusiness/Restaurant para que buscadores
  * como Google puedan mostrar horarios, dirección y rating en resultados ricos.
+ *
+ * Nota: openingHoursSpecification necesita horas en formato estructurado
+ * (HH:mm), pero el horario configurable desde /admin es texto libre
+ * (ej: "De miércoles a domingos de 17:30 a 00:00"), así que esa parte del
+ * schema sigue tomando los valores fijos de business.ts.
  */
-export function LocalBusinessSchema() {
+export function LocalBusinessSchema({
+  name,
+  description,
+  telephone,
+  instagram,
+}: LocalBusinessSchemaProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
-    name: business.name,
-    description: business.description,
+    name,
+    description,
     image: `${business.seo.url}/images/logo/logo.png`,
     url: business.seo.url,
-    telephone: `+${business.whatsapp.number}`,
+    telephone: telephone.startsWith("+") ? telephone : `+${telephone}`,
     address: {
       "@type": "PostalAddress",
       streetAddress: "Genova 498",
@@ -36,7 +53,7 @@ export function LocalBusinessSchema() {
     },
     servesCuisine: "Comida argentina, parrilla, milanesas, empanadas",
     priceRange: "$$",
-    sameAs: [business.social.instagram].filter(Boolean),
+    sameAs: [instagram].filter(Boolean),
   };
 
   return (

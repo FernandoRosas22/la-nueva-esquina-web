@@ -7,6 +7,7 @@ import { ProductModalProvider } from "@/hooks/product-modal-context";
 import { ToastViewport } from "@/components/ui/toast-viewport";
 import { LocalBusinessSchema } from "@/components/seo/local-business-schema";
 import { business } from "@/data/business";
+import { getBusinessData } from "@/lib/business-data";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -21,53 +22,57 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(business.seo.url),
-  title: {
-    default: business.seo.title,
-    template: `%s | ${business.name}`,
-  },
-  description: business.seo.description,
-  keywords: [
-    "rotisería Merlo",
-    "milanesas a domicilio",
-    "combos Mariano Acosta",
-    "empanadas Merlo",
-    "delivery comida Merlo",
-    "La Nueva Esquina",
-  ],
-  authors: [{ name: business.name }],
-  openGraph: {
-    title: business.seo.title,
-    description: business.seo.description,
-    url: business.seo.url,
-    siteName: business.name,
-    images: [
-      {
-        url: "/images/logo/logo.png",
-        width: 1200,
-        height: 1200,
-        alt: business.name,
-      },
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await getBusinessData();
+
+  return {
+    metadataBase: new URL(business.seo.url),
+    title: {
+      default: data.seoTitle,
+      template: `%s | ${data.businessName}`,
+    },
+    description: data.seoDescription,
+    keywords: [
+      "rotisería Merlo",
+      "milanesas a domicilio",
+      "combos Mariano Acosta",
+      "empanadas Merlo",
+      "delivery comida Merlo",
+      "La Nueva Esquina",
     ],
-    locale: "es_AR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: business.seo.title,
-    description: business.seo.description,
-    images: ["/images/logo/logo.png"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  icons: {
-    icon: "/images/logo/logo.png",
-    apple: "/images/logo/logo.png",
-  },
-};
+    authors: [{ name: data.businessName }],
+    openGraph: {
+      title: data.seoTitle,
+      description: data.seoDescription,
+      url: business.seo.url,
+      siteName: data.businessName,
+      images: [
+        {
+          url: "/images/logo/logo.png",
+          width: 1200,
+          height: 1200,
+          alt: data.businessName,
+        },
+      ],
+      locale: "es_AR",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: data.seoTitle,
+      description: data.seoDescription,
+      images: ["/images/logo/logo.png"],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+    icons: {
+      icon: "/images/logo/logo.png",
+      apple: "/images/logo/logo.png",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -75,15 +80,22 @@ export const viewport: Viewport = {
   themeColor: "#0a0a0a",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const data = await getBusinessData();
+
   return (
     <html lang="es-AR">
       <head>
-        <LocalBusinessSchema />
+        <LocalBusinessSchema
+          name={data.businessName}
+          description={data.heroDescription}
+          telephone={data.whatsapp}
+          instagram={data.instagram || undefined}
+        />
       </head>
       <body className={`${playfair.variable} ${inter.variable} antialiased bg-noche text-crema`}>
         <ToastProvider>

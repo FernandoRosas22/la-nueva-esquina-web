@@ -1,4 +1,3 @@
-import { business } from "@/data/business";
 import { storeConfig } from "@/config/store";
 import { formatPrice } from "@/lib/format-price";
 import type { CartItem, CheckoutData } from "@/types";
@@ -50,8 +49,16 @@ export function buildOrderMessage(items: CartItem[], checkout: CheckoutData): st
   return lines.join("\n");
 }
 
-/** Devuelve la URL de wa.me lista para abrir, con el mensaje codificado. */
-export function buildWhatsAppUrl(items: CartItem[], checkout: CheckoutData): string {
+/**
+ * Devuelve la URL de wa.me lista para abrir, con el mensaje codificado.
+ * `whatsappNumber` se pasa desde afuera (configuración dinámica del
+ * negocio) en vez de leerse fijo de business.ts.
+ */
+export function buildWhatsAppUrl(
+  items: CartItem[],
+  checkout: CheckoutData,
+  whatsappNumber: string
+): string {
   const message = buildOrderMessage(items, checkout);
-  return `https://wa.me/${business.whatsapp.number}?text=${encodeURIComponent(message)}`;
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }

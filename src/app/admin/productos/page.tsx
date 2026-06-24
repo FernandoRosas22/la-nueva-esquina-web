@@ -6,6 +6,7 @@ import { Plus, Pencil, Trash2, ImageOff, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/format-price";
+import { isDataUrl } from "@/lib/is-data-url";
 import {
   subscribeToAllProductsAdmin,
   createProduct,
@@ -144,6 +145,7 @@ export default function AdminProductsPage() {
                           src={product.image}
                           alt={product.name}
                           fill
+                          unoptimized={isDataUrl(product.image)}
                           className="object-cover"
                           sizes="48px"
                           onError={() =>

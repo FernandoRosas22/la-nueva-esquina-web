@@ -8,6 +8,7 @@ import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { formatPrice } from "@/lib/format-price";
 import { useCartContext } from "@/hooks/cart-context";
 import { useUIContext } from "@/hooks/ui-context";
+import { isDataUrl } from "@/lib/is-data-url";
 
 export function CartDrawer() {
   const { view, close, openCheckout } = useUIContext();
@@ -65,6 +66,7 @@ export function CartDrawer() {
                             src={item.image}
                             alt={item.name}
                             fill
+                            unoptimized={isDataUrl(item.image)}
                             className="object-cover"
                             sizes="96px"
                           />

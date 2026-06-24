@@ -10,6 +10,7 @@ import { QuantityStepper } from "@/components/ui/quantity-stepper";
 import { formatPrice } from "@/lib/format-price";
 import { useCartContext } from "@/hooks/cart-context";
 import { useProductModalContext } from "@/hooks/product-modal-context";
+import { isDataUrl } from "@/lib/is-data-url";
 import type { ProductVariant } from "@/types";
 
 /** Chips por defecto, usados solo si el producto no tiene `chips` propios. */
@@ -75,6 +76,7 @@ export function ProductDetailModal() {
                   src={product.image}
                   alt={product.name}
                   fill
+                  unoptimized={isDataUrl(product.image)}
                   className="object-cover"
                   sizes="(max-width: 640px) 100vw, 512px"
                   priority

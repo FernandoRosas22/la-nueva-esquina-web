@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { ImageOff } from "lucide-react";
+import { useState, useRef, type FormEvent, type DragEvent } from "react";
+import { ImageOff, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { AdminProduct } from "@/lib/firestore-products";
 
@@ -23,6 +23,9 @@ const badgeOptions = [
   { value: "PROMO", label: "💸 PROMO" },
   { value: "NUEVO", label: "🆕 NUEVO" },
 ];
+
+const MAX_IMAGE_BYTES = 700 * 1024;
+const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 function emptyValues(): ProductFormValues {
   return {
@@ -70,10 +73,34 @@ export function ProductForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const update = <K extends keyof ProductFormValues>(key: K, value: ProductFormValues[K]) => {
     setValues((prev) => ({ ...prev, [key]: value }));
     if (key === "image") setImageError(false);
+  };
+
+  const handleFile = (file: File) => {
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      setError("Solo se permiten imágenes JPG, PNG o WEBP.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setError("La imagen no puede superar los 700 KB (límite de la base de datos).");
+      return;
+    }
+    setError(null);
+    const reader = new FileReader();
+    reader.onload = () => update("image", reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleDrop = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFile(file);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -90,18 +117,7 @@ export function ProductForm({
       return;
     }
     if (!values.image.trim()) {
-      setError("La URL de la imagen es obligatoria.");
-      return;
-    }
-    const imageValue = values.image.trim();
-    const isValidImageValue =
-      imageValue.startsWith("http://") ||
-      imageValue.startsWith("https://") ||
-      imageValue.startsWith("/");
-    if (!isValidImageValue) {
-      setError(
-        'La imagen tiene que ser una URL completa (https://...) o una ruta que empiece con "/".'
-      );
+      setError("La foto es obligatoria.");
       return;
     }
     if (!Number.isFinite(priceNumber) || priceNumber <= 0) {
@@ -180,37 +196,52 @@ export function ProductForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-crema/80">URL de la imagen</label>
+        <label className="mb-1 block text-sm font-medium text-crema/80">Foto del producto</label>
         <input
-          type="text"
-          required
-          value={values.image}
-          onChange={(e) => update("image", e.target.value)}
-          className="w-full rounded-xl border border-dorado/20 bg-noche px-4 py-2.5 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
-          placeholder="https://... o /images/products/foto.jpg"
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/jpg,image/png,image/webp"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleFile(file);
+          }}
         />
-        {values.image && (
-          <div className="relative mt-2 h-32 w-32 overflow-hidden rounded-xl border border-dorado/20 bg-noche">
-            {imageError ? (
-              <div className="flex h-full w-full flex-col items-center justify-center gap-1 text-crema/40">
-                <ImageOff size={20} />
-                <span className="text-[10px]">No se pudo cargar</span>
-              </div>
-            ) : (
-              // Usamos <img> nativo (no next/image) para esta vista previa:
-              // la URL la está escribiendo el usuario en tiempo real, y
-              // next/image requiere que el hostname ya esté permitido y la
-              // URL completa y válida antes de intentar optimizarla.
-              // eslint-disable-next-line @next/next/no-img-element
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+          className={`flex cursor-pointer flex-col items-center gap-3 rounded-xl border-2 border-dashed px-4 py-6 text-center transition-colors ${
+            dragOver ? "border-amarillo bg-amarillo/5" : "border-dorado/30 bg-noche"
+          }`}
+        >
+          {values.image && !imageError ? (
+            <div className="relative h-28 w-28 overflow-hidden rounded-xl border border-dorado/20">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={values.image}
                 alt="Vista previa"
                 className="h-full w-full object-cover"
                 onError={() => setImageError(true)}
               />
-            )}
+            </div>
+          ) : (
+            <div className="flex h-28 w-28 flex-col items-center justify-center gap-1 rounded-xl border border-dorado/20 bg-noche-suave text-crema/40">
+              <ImageOff size={20} />
+            </div>
+          )}
+          <div className="flex items-center gap-2 text-sm font-semibold text-amarillo">
+            <UploadCloud size={16} />
+            {values.image ? "Cambiar foto" : "Seleccionar imagen"}
           </div>
-        )}
+          <p className="text-xs text-crema/40">
+            O arrastrá la imagen acá · JPG, PNG o WEBP · máx. 700 KB
+          </p>
+        </div>
       </div>
 
       <div>

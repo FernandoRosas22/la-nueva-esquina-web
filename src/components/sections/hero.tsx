@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { business } from "@/data/business";
+import { useBusinessSettings } from "@/hooks/use-business-settings";
 
 const beneficios = [
   "Combos para compartir",
@@ -13,6 +13,8 @@ const beneficios = [
 ];
 
 export function Hero() {
+  const data = useBusinessSettings();
+
   return (
     <section
       id="inicio"
@@ -45,7 +47,7 @@ export function Hero() {
         >
           <Image
             src="/images/logo/logo.png"
-            alt={business.name}
+            alt={data.businessName}
             width={140}
             height={140}
             className="mb-6 h-28 w-28 rounded-full object-cover shadow-[0_0_40px_rgba(212,175,55,0.35)] sm:h-36 sm:w-36"
@@ -59,7 +61,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
           className="font-display text-4xl font-extrabold uppercase tracking-wide text-dorado sm:text-6xl"
         >
-          {business.name}
+          {data.businessName}
         </motion.h1>
 
         <motion.p
@@ -68,7 +70,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
           className="mt-3 font-display text-lg font-semibold italic text-amarillo sm:text-2xl"
         >
-          {business.slogan}
+          {data.slogan}
         </motion.p>
 
         <motion.p
@@ -77,7 +79,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
           className="mt-4 max-w-xl text-balance text-base text-crema/80 sm:text-lg"
         >
-          {business.description}
+          {data.heroDescription}
         </motion.p>
 
         <motion.ul
@@ -129,7 +131,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mt-6 text-sm font-medium text-crema/60"
         >
-          Abrimos {business.hoursLabel}
+          Abrimos {data.hours}
         </motion.p>
       </div>
     </section>

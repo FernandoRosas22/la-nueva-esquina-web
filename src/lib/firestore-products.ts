@@ -113,8 +113,11 @@ export function subscribeToAllProductsAdmin(
 
 /** Crea un producto nuevo en Firestore. */
 export async function createProduct(data: Omit<ProductDoc, "createdAt" | "updatedAt">) {
+  const clean = Object.fromEntries(
+    Object.entries(data).filter(([, v]) => v !== undefined)
+  );
   return addDoc(collection(db, PRODUCTS_COLLECTION), {
-    ...data,
+    ...clean,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -122,8 +125,11 @@ export async function createProduct(data: Omit<ProductDoc, "createdAt" | "update
 
 /** Actualiza campos puntuales de un producto existente. */
 export async function updateProductDoc(id: string, data: Partial<ProductDoc>) {
+  const clean = Object.fromEntries(
+    Object.entries(data).filter(([, v]) => v !== undefined)
+  );
   return updateDoc(doc(db, PRODUCTS_COLLECTION, id), {
-    ...data,
+    ...clean,
     updatedAt: serverTimestamp(),
   });
 }

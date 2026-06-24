@@ -1,28 +1,33 @@
+"use client";
+
 import { MapPin, Clock, MessageCircle } from "lucide-react";
 import { InstagramIcon } from "@/components/ui/instagram-icon";
 import { business } from "@/data/business";
+import { useBusinessSettings } from "@/hooks/use-business-settings";
 
 export function Footer() {
+  const data = useBusinessSettings();
+
   return (
     <footer className="border-t border-dorado/20 bg-noche px-4 py-10 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="grid gap-8 sm:grid-cols-3">
           <div>
-            <h3 className="font-display text-lg font-bold text-dorado">{business.name}</h3>
-            <p className="mt-2 text-sm text-crema/60">{business.slogan}</p>
+            <h3 className="font-display text-lg font-bold text-dorado">{data.businessName}</h3>
+            <p className="mt-2 text-sm text-crema/60">{data.slogan}</p>
           </div>
 
           <div className="flex flex-col gap-3 text-sm text-crema/70">
             <div className="flex items-start gap-2">
               <MapPin size={18} className="mt-0.5 shrink-0 text-dorado" />
-              <span>{business.address}</span>
+              <span>{data.address}</span>
             </div>
             <div className="flex items-start gap-2">
               <Clock size={18} className="mt-0.5 shrink-0 text-dorado" />
-              <span>{business.hoursLabel}</span>
+              <span>{data.hours}</span>
             </div>
             <a
-              href={`https://wa.me/${business.whatsapp.number}`}
+              href={`https://wa.me/${data.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 hover:text-amarillo"
@@ -30,9 +35,9 @@ export function Footer() {
               <MessageCircle size={18} className="shrink-0 text-dorado" />
               Pedir por WhatsApp
             </a>
-            {business.social.instagram && (
+            {data.instagram && (
               <a
-                href={business.social.instagram}
+                href={data.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 hover:text-amarillo"
@@ -61,7 +66,7 @@ export function Footer() {
         </div>
 
         <p className="mt-8 border-t border-white/5 pt-6 text-center text-xs text-crema/30">
-          © {new Date().getFullYear()} {business.name}. Todos los derechos reservados.
+          © {new Date().getFullYear()} {data.businessName}. Todos los derechos reservados.
         </p>
       </div>
     </footer>

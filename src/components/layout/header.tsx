@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import { ShoppingCart, MessageCircle } from "lucide-react";
-import { business } from "@/data/business";
 import { useCartContext } from "@/hooks/cart-context";
 import { useUIContext } from "@/hooks/ui-context";
+import { useBusinessSettings } from "@/hooks/use-business-settings";
 
 export function Header() {
   const { totalItems } = useCartContext();
   const { openCart } = useUIContext();
-  const whatsappUrl = `https://wa.me/${business.whatsapp.number}`;
+  const data = useBusinessSettings();
+  const whatsappUrl = `https://wa.me/${data.whatsapp}`;
 
   return (
     <header className="sticky top-0 z-50 border-b border-dorado/20 bg-noche/90 backdrop-blur-md">
@@ -17,14 +18,14 @@ export function Header() {
         <a href="#inicio" className="flex items-center gap-3">
           <Image
             src="/images/logo/logo.png"
-            alt={business.name}
+            alt={data.businessName}
             width={48}
             height={48}
             className="h-11 w-11 rounded-full object-cover sm:h-12 sm:w-12"
             priority
           />
           <span className="hidden font-display text-lg font-bold leading-tight text-dorado sm:block">
-            {business.name}
+            {data.businessName}
           </span>
         </a>
 

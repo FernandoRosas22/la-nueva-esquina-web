@@ -2,12 +2,13 @@
 
 import { MessageCircle } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { business } from "@/data/business";
 import { useCartContext } from "@/hooks/cart-context";
 import { useUIContext } from "@/hooks/ui-context";
+import { useBusinessSettings } from "@/hooks/use-business-settings";
 
 export function WhatsAppFloatingButton() {
-  const whatsappUrl = `https://wa.me/${business.whatsapp.number}`;
+  const data = useBusinessSettings();
+  const whatsappUrl = `https://wa.me/${data.whatsapp}`;
   const { totalItems } = useCartContext();
   const { view } = useUIContext();
 
