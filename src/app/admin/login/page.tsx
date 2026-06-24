@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { LockKeyhole, AlertCircle } from "lucide-react";
+import { LockKeyhole, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/auth-context";
 
@@ -22,11 +22,13 @@ function getErrorMessage(code: string): string {
 }
 
 export default function AdminLoginPage() {
-  const { signIn } = useAuth();
+  const { signIn, resetPassword } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<"login" | "reset">("login");
+  const [resetSent, setResetSent] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -36,6 +38,21 @@ export default function AdminLoginPage() {
       await signIn(email, password);
       // Si el login es exitoso, AdminGate detecta el cambio de `user`
       // y redirige automáticamente a /admin.
+    } catch (err) {
+      const code = err instanceof Error && "code" in err ? String(err.code) : "";
+      setError(getErrorMessage(code));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReset = async (e: FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      await resetPassword(email);
+      setResetSent(true);
     } catch (err) {
       const code = err instanceof Error && "code" in err ? String(err.code) : "";
       setError(getErrorMessage(code));
@@ -55,50 +72,113 @@ export default function AdminLoginPage() {
           <p className="mt-1 text-sm text-crema/60">La Nueva Esquina</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div>
-            <label htmlFor="email" className="mb-1 block text-sm font-medium text-crema/80">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              autoComplete="username"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-dorado/20 bg-noche px-4 py-3 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
-              placeholder="tu@email.com"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password" className="mb-1 block text-sm font-medium text-crema/80">
-              Contraseña
-            </label>
-            <input
-              id="password"
-              type="password"
-              required
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-dorado/20 bg-noche px-4 py-3 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
-              placeholder="••••••••"
-            />
-          </div>
-
-          {error && (
-            <div className="flex items-center gap-2 rounded-xl bg-rojo/10 px-3 py-2 text-sm text-rojo">
-              <AlertCircle size={16} className="shrink-0" />
-              {error}
+        {mode === "login" ? (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div>
+              <label htmlFor="email" className="mb-1 block text-sm font-medium text-crema/80">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                autoComplete="username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-xl border border-dorado/20 bg-noche px-4 py-3 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
+                placeholder="tu@email.com"
+              />
             </div>
-          )}
 
-          <Button type="submit" size="lg" className="mt-2 w-full" disabled={loading}>
-            {loading ? "Ingresando..." : "Ingresar"}
-          </Button>
-        </form>
+            <div>
+              <label htmlFor="password" className="mb-1 block text-sm font-medium text-crema/80">
+                Contraseña
+              </label>
+              <input
+                id="password"
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-xl border border-dorado/20 bg-noche px-4 py-3 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
+                placeholder="••••••••"
+              />
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2 rounded-xl bg-rojo/10 px-3 py-2 text-sm text-rojo">
+                <AlertCircle size={16} className="shrink-0" />
+                {error}
+              </div>
+            )}
+
+            <Button type="submit" size="lg" className="mt-2 w-full" disabled={loading}>
+              {loading ? "Ingresando..." : "Ingresar"}
+            </Button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMode("reset");
+                setError(null);
+              }}
+              className="text-center text-sm font-medium text-crema/50 hover:text-amarillo"
+            >
+              Olvidé mi contraseña
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleReset} className="flex flex-col gap-4">
+            <p className="text-sm text-crema/60">
+              Ingresá tu email y te mandamos un link para crear una contraseña nueva.
+            </p>
+            <div>
+              <label htmlFor="reset-email" className="mb-1 block text-sm font-medium text-crema/80">
+                Email
+              </label>
+              <input
+                id="reset-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-xl border border-dorado/20 bg-noche px-4 py-3 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
+                placeholder="tu@email.com"
+              />
+            </div>
+
+            {error && (
+              <div className="flex items-center gap-2 rounded-xl bg-rojo/10 px-3 py-2 text-sm text-rojo">
+                <AlertCircle size={16} className="shrink-0" />
+                {error}
+              </div>
+            )}
+
+            {resetSent && (
+              <div className="flex items-center gap-2 rounded-xl bg-amarillo/10 px-3 py-2 text-sm text-amarillo">
+                <CheckCircle2 size={16} className="shrink-0" />
+                Listo, revisá tu email.
+              </div>
+            )}
+
+            <Button type="submit" size="lg" className="mt-2 w-full" disabled={loading}>
+              {loading ? "Enviando..." : "Enviar link de recuperación"}
+            </Button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMode("login");
+                setError(null);
+                setResetSent(false);
+              }}
+              className="text-center text-sm font-medium text-crema/50 hover:text-amarillo"
+            >
+              Volver a ingresar
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );

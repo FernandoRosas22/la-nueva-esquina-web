@@ -10,7 +10,12 @@ import {
   type BusinessSettingsDoc,
 } from "@/lib/firestore-settings";
 
-const fields: Array<{ key: keyof BusinessSettingsDoc; label: string; placeholder: string }> = [
+const fields: Array<{
+  key: keyof BusinessSettingsDoc;
+  label: string;
+  placeholder: string;
+  multiline?: boolean;
+}> = [
   { key: "businessName", label: "Nombre del negocio", placeholder: "La Nueva Esquina" },
   { key: "whatsapp", label: "WhatsApp (con código de país, sin signos)", placeholder: "5491133374980" },
   { key: "address", label: "Dirección", placeholder: "Genova 498, Mariano Acosta, Merlo" },
@@ -20,9 +25,19 @@ const fields: Array<{ key: keyof BusinessSettingsDoc; label: string; placeholder
   { key: "alias", label: "Alias para transferencias", placeholder: "lanuevaesquina.mp" },
   { key: "cbu", label: "CBU", placeholder: "0000003100000000000000" },
   { key: "slogan", label: "Slogan (debajo del nombre en el inicio)", placeholder: "Tu mejor versión en cada comida" },
-  { key: "heroDescription", label: "Descripción del inicio", placeholder: "Tu rotisería de confianza en la palma de tu mano..." },
+  {
+    key: "heroDescription",
+    label: "Descripción del inicio",
+    placeholder: "Tu rotisería de confianza en la palma de tu mano...",
+    multiline: true,
+  },
   { key: "seoTitle", label: "Título para Google", placeholder: "La Nueva Esquina | Rotisería en Merlo" },
-  { key: "seoDescription", label: "Descripción para Google", placeholder: "Combos, hamburguesas, milanesas y empanadas. Pedidos por WhatsApp." },
+  {
+    key: "seoDescription",
+    label: "Descripción para Google",
+    placeholder: "Combos, hamburguesas, milanesas y empanadas. Pedidos por WhatsApp.",
+    multiline: true,
+  },
 ];
 
 export default function AdminSettingsPage() {
@@ -30,6 +45,7 @@ export default function AdminSettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = subscribeToBusinessSettings((data) => {
@@ -47,11 +63,13 @@ export default function AdminSettingsPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setError(null);
     try {
       await saveBusinessSettings(values);
       setSaved(true);
     } catch (err) {
       console.error(err);
+      setError("No se pudo guardar. Probá de nuevo.");
     } finally {
       setSaving(false);
     }
@@ -74,13 +92,23 @@ export default function AdminSettingsPage() {
               <label className="mb-1 block text-sm font-medium text-crema/80">
                 {field.label}
               </label>
-              <input
-                type="text"
-                value={values[field.key]}
-                onChange={(e) => update(field.key, e.target.value)}
-                placeholder={field.placeholder}
-                className="w-full rounded-xl border border-dorado/20 bg-noche-suave px-4 py-2.5 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
-              />
+              {field.multiline ? (
+                <textarea
+                  rows={3}
+                  value={values[field.key]}
+                  onChange={(e) => update(field.key, e.target.value)}
+                  placeholder={field.placeholder}
+                  className="w-full resize-none rounded-xl border border-dorado/20 bg-noche-suave px-4 py-2.5 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={values[field.key]}
+                  onChange={(e) => update(field.key, e.target.value)}
+                  placeholder={field.placeholder}
+                  className="w-full rounded-xl border border-dorado/20 bg-noche-suave px-4 py-2.5 text-crema placeholder:text-crema/30 focus:border-amarillo focus:outline-none"
+                />
+              )}
             </div>
           ))}
 
@@ -95,6 +123,9 @@ export default function AdminSettingsPage() {
               </span>
             )}
           </div>
+          {error && (
+            <div className="rounded-xl bg-rojo/10 px-3 py-2 text-sm text-rojo">{error}</div>
+          )}
         </form>
       )}
     </div>
