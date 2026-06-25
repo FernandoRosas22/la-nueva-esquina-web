@@ -8,6 +8,7 @@ import {
   query,
   orderBy,
   serverTimestamp,
+  writeBatch,
   type Unsubscribe,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -137,4 +138,17 @@ export async function updateProductDoc(id: string, data: Partial<ProductDoc>) {
 /** Elimina un producto definitivamente de Firestore. */
 export async function deleteProductDoc(id: string) {
   return deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
+}
+
+/**
+ * Actualiza el campo `order` de varios productos a la vez (drag&drop de
+ * orden en el panel admin). Usa un batch write para que sea una sola
+ * operación atómica en vez de N updates separados.
+ */
+export async function reorderProducts(orderedIds: string[]) {
+  const batch = writeBatch(db);
+  orderedIds.forEach((id, index) => {
+    batch.update(doc(db, PRODUCTS_COLLECTION, id), { order: index });
+  });
+  return batch.commit();
 }

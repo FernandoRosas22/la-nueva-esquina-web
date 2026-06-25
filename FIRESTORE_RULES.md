@@ -25,6 +25,19 @@ service cloud.firestore {
       allow create, update, delete: if request.auth != null;
     }
 
+    // Categorías: lectura pública (sugerencias en el form de productos),
+    // escritura solo admin.
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    // Promociones: lectura pública (banner en la web), escritura solo admin.
+    match /promotions/{promotionId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
     // Cualquier otra colección futura: bloqueada por defecto hasta que
     // se agregue una regla explícita para ella.
     match /{document=**} {

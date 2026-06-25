@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef, type FormEvent, type DragEvent } from "react";
+import { useState, useRef, useEffect, type FormEvent, type DragEvent } from "react";
 import { ImageOff, UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { subscribeToCategories } from "@/lib/firestore-categories";
 import type { AdminProduct } from "@/lib/firestore-products";
 
 export interface ProductFormValues {
@@ -55,8 +56,6 @@ export function valuesFromProductDoc(product: AdminProduct): ProductFormValues {
 
 interface ProductFormProps {
   initialValues?: ProductFormValues;
-  /** Categorías existentes, para sugerir como datalist (el campo sigue siendo texto libre) */
-  existingCategories: string[];
   submitLabel: string;
   onSubmit: (values: ProductFormValues) => Promise<void>;
   onCancel: () => void;
@@ -64,7 +63,6 @@ interface ProductFormProps {
 
 export function ProductForm({
   initialValues,
-  existingCategories,
   submitLabel,
   onSubmit,
   onCancel,
@@ -74,7 +72,15 @@ export function ProductForm({
   const [error, setError] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
   const [dragOver, setDragOver] = useState(false);
+  const [categoryNames, setCategoryNames] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToCategories((categories) => {
+      setCategoryNames(categories.filter((c) => c.active).map((c) => c.name));
+    });
+    return unsubscribe;
+  }, []);
 
   const update = <K extends keyof ProductFormValues>(key: K, value: ProductFormValues[K]) => {
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -188,7 +194,7 @@ export function ProductForm({
             placeholder="Ej: combos"
           />
           <datalist id="categorias-existentes">
-            {existingCategories.map((c) => (
+            {categoryNames.map((c) => (
               <option key={c} value={c} />
             ))}
           </datalist>

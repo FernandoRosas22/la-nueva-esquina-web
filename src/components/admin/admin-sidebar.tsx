@@ -2,13 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, UtensilsCrossed, Settings, LogOut, Menu, X } from "lucide-react";
+import {
+  LayoutDashboard,
+  UtensilsCrossed,
+  Tags,
+  Megaphone,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/auth-context";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/productos", label: "Productos", icon: UtensilsCrossed },
+  { href: "/admin/categorias", label: "Categorías", icon: Tags },
+  { href: "/admin/promociones", label: "Promociones", icon: Megaphone },
   { href: "/admin/configuracion", label: "Configuración", icon: Settings },
 ];
 

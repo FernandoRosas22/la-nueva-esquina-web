@@ -4,6 +4,7 @@ import { Hero } from "@/components/sections/hero";
 import { FeaturedSection } from "@/components/sections/featured-section";
 import { CatalogSection } from "@/components/sections/catalog-section";
 import { TrustSection } from "@/components/sections/trust-section";
+import { PromotionsBanner } from "@/components/sections/promotions-banner";
 import { CartDrawer } from "@/components/cart/cart-drawer";
 import { CheckoutModal } from "@/components/checkout/checkout-modal";
 import { MobileCartBar } from "@/components/cart/mobile-cart-bar";
@@ -14,6 +15,7 @@ export default function Home() {
   return (
     <>
       <Header />
+      <PromotionsBanner />
       <main>
         <Hero />
         <FeaturedSection />

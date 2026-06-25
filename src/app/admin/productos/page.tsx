@@ -1,17 +1,28 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import { Plus, Pencil, Trash2, ImageOff, Loader2, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Plus, Loader2, X } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { formatPrice } from "@/lib/format-price";
-import { isDataUrl } from "@/lib/is-data-url";
 import {
   subscribeToAllProductsAdmin,
   createProduct,
   updateProductDoc,
   deleteProductDoc,
+  reorderProducts,
   type AdminProduct,
 } from "@/lib/firestore-products";
 import {
@@ -19,6 +30,7 @@ import {
   valuesFromProductDoc,
   type ProductFormValues,
 } from "@/components/admin/product-form";
+import { SortableProductRow } from "@/components/admin/sortable-product-row";
 
 type ModalState = { mode: "create" } | { mode: "edit"; product: AdminProduct } | null;
 
@@ -29,6 +41,12 @@ export default function AdminProductsPage() {
   const [productToDelete, setProductToDelete] = useState<AdminProduct | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  const [reorderError, setReorderError] = useState<string | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
+  );
 
   useEffect(() => {
     const unsubscribe = subscribeToAllProductsAdmin((data) => {
@@ -37,11 +55,6 @@ export default function AdminProductsPage() {
     });
     return unsubscribe;
   }, []);
-
-  const existingCategories = useMemo(() => {
-    const set = new Set(products.map((p) => p.category));
-    return Array.from(set);
-  }, [products]);
 
   const handleCreate = async (values: ProductFormValues) => {
     const maxOrder = products.reduce((max, p) => Math.max(max, p.order), -1);
@@ -90,13 +103,36 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = products.findIndex((p) => p.id === active.id);
+    const newIndex = products.findIndex((p) => p.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const reordered = arrayMove(products, oldIndex, newIndex);
+    // Actualización optimista: se ve el nuevo orden al instante, sin
+    // esperar la confirmación de Firestore.
+    setProducts(reordered);
+    setReorderError(null);
+
+    try {
+      await reorderProducts(reordered.map((p) => p.id));
+    } catch (err) {
+      console.error(err);
+      setReorderError("No se pudo guardar el nuevo orden. Probá de nuevo.");
+    }
+  };
+
   return (
     <div>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-bold text-crema">Productos</h1>
           <p className="text-sm text-crema/60">
-            {products.length} producto{products.length !== 1 ? "s" : ""} en total
+            {products.length} producto{products.length !== 1 ? "s" : ""} en total · arrastrá
+            <span className="mx-1 inline-block">⠿</span>para cambiar el orden del catálogo
           </p>
         </div>
         <Button onClick={() => setModal({ mode: "create" })}>
@@ -104,6 +140,12 @@ export default function AdminProductsPage() {
           Nuevo producto
         </Button>
       </div>
+
+      {reorderError && (
+        <div className="mb-4 rounded-xl bg-rojo/10 px-3 py-2 text-sm text-rojo">
+          {reorderError}
+        </div>
+      )}
 
       {loading && (
         <div className="flex items-center gap-2 text-crema/60">
@@ -120,9 +162,10 @@ export default function AdminProductsPage() {
 
       {!loading && products.length > 0 && (
         <div className="overflow-x-auto rounded-2xl border border-dorado/20">
-          <table className="w-full min-w-[700px] text-left text-sm">
+          <table className="w-full min-w-[750px] text-left text-sm">
             <thead className="bg-noche-suave text-crema/60">
               <tr>
+                <th className="w-8 px-2 py-3"></th>
                 <th className="px-4 py-3 font-medium">Foto</th>
                 <th className="px-4 py-3 font-medium">Nombre</th>
                 <th className="px-4 py-3 font-medium">Precio</th>
@@ -131,78 +174,32 @@ export default function AdminProductsPage() {
                 <th className="px-4 py-3 font-medium">Acciones</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-dorado/10">
-              {products.map((product) => (
-                <tr key={product.id} className="bg-noche-suave/40">
-                  <td className="px-4 py-3">
-                    <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-dorado/20 bg-noche">
-                      {imageErrors[product.id] ? (
-                        <div className="flex h-full w-full items-center justify-center text-crema/30">
-                          <ImageOff size={16} />
-                        </div>
-                      ) : (
-                        <Image
-                          src={product.image}
-                          alt={product.name}
-                          fill
-                          unoptimized={isDataUrl(product.image)}
-                          className="object-cover"
-                          sizes="48px"
-                          onError={() =>
-                            setImageErrors((prev) => ({ ...prev, [product.id]: true }))
-                          }
-                        />
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="font-semibold text-crema">{product.name}</div>
-                    {product.badge && (
-                      <Badge variant="rojo" className="mt-1">
-                        {product.badge}
-                      </Badge>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 font-semibold text-amarillo">
-                    {formatPrice(product.price)}
-                  </td>
-                  <td className="px-4 py-3 capitalize text-crema/80">{product.category}</td>
-                  <td className="px-4 py-3">
-                    <button
-                      type="button"
-                      onClick={() => handleToggleActive(product)}
-                      className={`rounded-full px-3 py-1 text-xs font-bold ${
-                        product.active
-                          ? "bg-amarillo/15 text-amarillo"
-                          : "bg-crema/10 text-crema/50"
-                      }`}
-                    >
-                      {product.active ? "Activo" : "Inactivo"}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setModal({ mode: "edit", product })}
-                        aria-label={`Editar ${product.name}`}
-                        className="rounded-lg p-2 text-crema/70 hover:bg-noche hover:text-amarillo"
-                      >
-                        <Pencil size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setProductToDelete(product)}
-                        aria-label={`Eliminar ${product.name}`}
-                        className="rounded-lg p-2 text-crema/70 hover:bg-noche hover:text-rojo"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={products.map((p) => p.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <tbody className="divide-y divide-dorado/10">
+                  {products.map((product) => (
+                    <SortableProductRow
+                      key={product.id}
+                      product={product}
+                      imageError={imageErrors[product.id] ?? false}
+                      onImageError={() =>
+                        setImageErrors((prev) => ({ ...prev, [product.id]: true }))
+                      }
+                      onToggleActive={() => handleToggleActive(product)}
+                      onEdit={() => setModal({ mode: "edit", product })}
+                      onDelete={() => setProductToDelete(product)}
+                    />
+                  ))}
+                </tbody>
+              </SortableContext>
+            </DndContext>
           </table>
         </div>
       )}
@@ -225,7 +222,6 @@ export default function AdminProductsPage() {
               </button>
             </div>
             <ProductForm
-              existingCategories={existingCategories}
               initialValues={
                 modal.mode === "edit" ? valuesFromProductDoc(modal.product) : undefined
               }
